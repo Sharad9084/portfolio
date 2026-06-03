@@ -493,6 +493,48 @@
     box-shadow: 0 0 32px rgba(34,211,238,0.55), inset 0 0 16px rgba(34,211,238,0.35);
   }
 
+
+  /* SCROLL-TRACED TIMELINE PATH & HERO CHAR REVEAL */
+  .timeline {
+    position: relative;
+  }
+  /* Remove old static timeline line */
+  .timeline::before {
+    display: none !important;
+  }
+  .timeline-bar {
+    position: absolute;
+    left: 7px;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: linear-gradient(180deg, var(--accent), var(--accent2), var(--accent3), transparent);
+    transform-origin: top;
+    transform: scaleY(0);
+    transition: transform 0.1s ease-out;
+  }
+  
+  /* 3D Character Reveal */
+  .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(24px) rotateX(-90deg);
+    animation: charReveal 0.7s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+  }
+  .word {
+    display: inline-block;
+    white-space: nowrap;
+    margin-right: 0.15em;
+  }
+  @keyframes charReveal {
+    to { opacity: 1; transform: none; }
+  }
+  
+  /* Spotlight cursor hover transition style */
+  #stars {
+    pointer-events: none;
+  }
+
 </style>
 </head>
 <body>
@@ -520,7 +562,19 @@
 <header>
 <div class="wrap">
 <div class="badge"><span class="pulse"></span> Open to Data Analyst &amp; ML opportunities</div>
-<h1>Hi, I'm <span class="gradient-text">Sharad Sharma</span></h1>
+<h1 class="hero-title">
+        <span class="word">
+          <span class="char" style="animation-delay:0.1s">H</span><span class="char" style="animation-delay:0.15s">i</span><span class="char" style="animation-delay:0.2s">,</span>
+        </span>
+        <span class="word">
+          <span class="char" style="animation-delay:0.25s">I</span><span class="char" style="animation-delay:0.3s">'</span><span class="char" style="animation-delay:0.35s">m</span>
+        </span>
+        <span class="word gradient-text">
+          <span class="char" style="animation-delay:0.45s">S</span><span class="char" style="animation-delay:0.5s">h</span><span class="char" style="animation-delay:0.55s">a</span><span class="char" style="animation-delay:0.60s">r</span><span class="char" style="animation-delay:0.65s">a</span><span class="char" style="animation-delay:0.70s">d</span>
+          <span class="char" style="animation-delay:0.75s">&nbsp;</span>
+          <span class="char" style="animation-delay:0.80s">S</span><span class="char" style="animation-delay:0.85s">h</span><span class="char" style="animation-delay:0.90s">a</span><span class="char" style="animation-delay:0.95s">r</span><span class="char" style="animation-delay:1.00s">m</span><span class="char" style="animation-delay:1.05s">a</span>
+        </span>
+      </h1>
 <div class="typed-wrap">I build <span id="typed"></span><span class="cursor"> </span></div>
 <p class="lead">B.Tech Data Science student turning raw data into decisions. I craft interactive Power BI dashboards, run end-to-end EDA, and ship machine learning models — deployed live on Hugging Face Spaces.</p>
 <div class="cta">
@@ -561,6 +615,7 @@
 <div class="wrap">
 <div class="sec-head"><div class="kicker">02 — Experience</div><h2>Where I've worked</h2></div>
 <div class="timeline">
+        <div class="timeline-bar"></div>
 <div class="tl-item">
 <div class="role">Data Visualisation Intern</div>
 <div class="meta">TATA Forage · Oct 2024</div>
@@ -790,8 +845,41 @@
     glow.style.cssText='position:fixed;width:520px;height:520px;border-radius:50%;pointer-events:none;z-index:0;left:0;top:0;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(34,211,238,.10),rgba(139,92,246,.05) 40%,transparent 70%);transition:opacity .3s;mix-blend-mode:screen';
     document.body.appendChild(glow);
     let gx=innerWidth/2,gy=innerHeight/2,tx=gx,ty=gy;
+    let isHoveringNav = false;
+    let navTargetRect = null;
+    
     addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY});
-    (function moveGlow(){gx+=(tx-gx)*.12;gy+=(ty-gy)*.12;glow.style.left=gx+'px';glow.style.top=gy+'px';requestAnimationFrame(moveGlow);})();
+    
+    document.querySelectorAll('nav .nav-links a, nav .logo').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        isHoveringNav = true;
+        navTargetRect = el.getBoundingClientRect();
+        glow.style.width = '140px';
+        glow.style.height = '140px';
+        glow.style.background = 'radial-gradient(circle, rgba(34,211,238,0.22), rgba(139,92,246,0.08) 45%, transparent 70%)';
+      });
+      el.addEventListener('mouseleave', () => {
+        isHoveringNav = false;
+        glow.style.width = '520px';
+        glow.style.height = '520px';
+        glow.style.background = 'radial-gradient(circle, rgba(34,211,238,0.1), rgba(139,92,246,0.05) 40%, transparent 70%)';
+      });
+    });
+    
+    (function moveGlow(){
+      if (isHoveringNav && navTargetRect) {
+        const targetX = navTargetRect.left + navTargetRect.width / 2 + window.scrollX;
+        const targetY = navTargetRect.top + navTargetRect.height / 2 + window.scrollY;
+        gx += (targetX - gx) * 0.16;
+        gy += (targetY - gy) * 0.16;
+      } else {
+        gx += (tx - gx) * 0.12;
+        gy += (ty - gy) * 0.12;
+      }
+      glow.style.left = gx + 'px';
+      glow.style.top = gy + 'px';
+      requestAnimationFrame(moveGlow);
+    })();
 
     /* 3D tilt on cards with parallax */
     document.querySelectorAll('.proj-card,.cert-card').forEach(card=>{
