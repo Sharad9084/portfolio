@@ -445,9 +445,60 @@
     filter: drop-shadow(0 0 8px var(--accent));
   }
 
+
+  /* 3D PERSPECTIVE AND PARALLAX CARD EFFECTS */
+  .proj-card, .cert-card {
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+  }
+  .proj-card .carousel, .cert-card .cert-img {
+    transform: translateZ(40px);
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease;
+  }
+  .proj-card .proj-body, .cert-card .cert-body {
+    transform: translateZ(20px);
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease;
+  }
+  .proj-card .proj-tags .tag, .proj-card .proj-links a, .cert-card .cert-body .date {
+    transform: translateZ(45px);
+    transition: transform 0.3s ease;
+  }
+  
+  /* Floating Glass 3D Shapes */
+  .glass-shape {
+    position: absolute;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.08), rgba(34,211,238,0.02) 60%, transparent 80%);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -1;
+  }
+  .glass-shape.s1 { width: 220px; height: 220px; top: 12%; left: 80%; animation: float3d 25s ease-in-out infinite; }
+  .glass-shape.s2 { width: 300px; height: 300px; top: 52%; left: -8%; animation: float3d 32s ease-in-out infinite-reverse; }
+  .glass-shape.s3 { width: 160px; height: 160px; top: 82%; left: 85%; animation: float3d 20s ease-in-out infinite; }
+  @keyframes float3d {
+    0%, 100% { transform: translateY(0px) rotate(0deg) translateZ(0px); }
+    50% { transform: translateY(-40px) rotate(180deg) translateZ(50px); }
+  }
+
+  /* 3D button glows */
+  .btn-primary {
+    box-shadow: 0 0 15px rgba(34,211,238,0.2), inset 0 0 8px rgba(34,211,238,0.15);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 0 32px rgba(34,211,238,0.55), inset 0 0 16px rgba(34,211,238,0.35);
+  }
+
 </style>
 </head>
 <body>
+  <div class="glass-shape s1"></div>
+  <div class="glass-shape s2"></div>
+  <div class="glass-shape s3"></div>
 <div id="progress"></div>
 <div class="bg-deco"><span></span><span></span><span></span></div>
 <canvas id="stars"></canvas>
@@ -742,21 +793,109 @@
     addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY});
     (function moveGlow(){gx+=(tx-gx)*.12;gy+=(ty-gy)*.12;glow.style.left=gx+'px';glow.style.top=gy+'px';requestAnimationFrame(moveGlow);})();
 
-    /* 3D tilt on cards */
+    /* 3D tilt on cards with parallax */
     document.querySelectorAll('.proj-card,.cert-card').forEach(card=>{
       card.addEventListener('mousemove',e=>{
         const r=card.getBoundingClientRect();
         const px=(e.clientX-r.left)/r.width-.5, py=(e.clientY-r.top)/r.height-.5;
-        card.style.transform=`translateY(-10px) rotateX(${(-py*6).toFixed(2)}deg) rotateY(${(px*6).toFixed(2)}deg)`;
+        card.style.transition = 'none';
+        card.style.transform=`perspective(1200px) translateY(-10px) rotateX(${(-py*12).toFixed(2)}deg) rotateY(${(px*12).toFixed(2)}deg)`;
       });
-      card.addEventListener('mouseleave',()=>{card.style.transform='';});
+      card.addEventListener('mouseleave',()=>{
+        card.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease';
+        card.style.transform='perspective(1200px) translateY(0px) rotateX(0deg) rotateY(0deg)';
+      });
     });
 
-    /* starfield */
-    const cv=document.getElementById('stars'),cx=cv.getContext('2d');let stars=[];
-    function resize(){cv.width=innerWidth;cv.height=innerHeight;stars=Array.from({length:90},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.3+.2,a:Math.random(),s:Math.random()*.4+.05}));}
-    function draw(){cx.clearRect(0,0,cv.width,cv.height);stars.forEach(st=>{st.a+=st.s*.04;const op=.4+Math.abs(Math.sin(st.a))*.5;cx.fillStyle=`rgba(150,200,255,${op})`;cx.beginPath();cx.arc(st.x,st.y,st.r,0,7);cx.fill();st.y-=st.s;if(st.y<0)st.y=cv.height;});requestAnimationFrame(draw);}
-    resize();draw();addEventListener('resize',resize);
+    /* 3D particle constellation background */
+    const cv=document.getElementById('stars'),cx=cv.getContext('2d');
+    let stars=[];
+    let mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
+    
+    function resize(){
+      cv.width=innerWidth;
+      cv.height=innerHeight;
+      stars=Array.from({length:85},()=>({
+        x: Math.random()*cv.width - cv.width/2,
+        y: Math.random()*cv.height - cv.height/2,
+        z: Math.random()*600 - 300,
+        r: Math.random()*1.5 + 0.5,
+        s: Math.random()*0.3 + 0.1
+      }));
+    }
+    
+    window.addEventListener('mousemove', e => {
+      mouse.targetX = (e.clientX - innerWidth/2) * 0.05;
+      mouse.targetY = (e.clientY - innerHeight/2) * 0.05;
+    });
+    
+    function draw(){
+      cx.clearRect(0,0,cv.width,cv.height);
+      
+      mouse.x += (mouse.targetX - mouse.x) * 0.05;
+      mouse.y += (mouse.targetY - mouse.y) * 0.05;
+      
+      const radX = mouse.y * Math.PI / 180;
+      const radY = mouse.x * Math.PI / 180;
+      
+      const cosX = Math.cos(radX), sinX = Math.sin(radX);
+      const cosY = Math.cos(radY), sinY = Math.sin(radY);
+      
+      const projected = [];
+      
+      stars.forEach(st => {
+        st.z -= st.s;
+        if (st.z < -300) {
+          st.z = 300;
+          st.x = Math.random()*cv.width - cv.width/2;
+          st.y = Math.random()*cv.height - cv.height/2;
+        }
+        
+        let x1 = st.x * cosY - st.z * sinY;
+        let z1 = st.z * cosY + st.x * sinY;
+        
+        let y1 = st.y * cosX - z1 * sinX;
+        let z2 = z1 * cosX + st.y * sinX;
+        
+        const fov = 400;
+        const scale = fov / (fov + z2);
+        const px = x1 * scale + cv.width/2;
+        const py = y1 * scale + cv.height/2;
+        const radius = st.r * scale;
+        
+        if (px >= 0 && px <= cv.width && py >= 0 && py <= cv.height) {
+          projected.push({ x: px, y: py, size: radius, z: z2 });
+          
+          cx.beginPath();
+          const op = Math.max(0.1, Math.min(0.8, 1 - (z2 + 300)/600));
+          cx.fillStyle = `rgba(34, 211, 238, ${op})`;
+          cx.arc(px, py, radius, 0, Math.PI * 2);
+          cx.fill();
+        }
+      });
+      
+      cx.strokeStyle = 'rgba(34, 211, 238, 0.05)';
+      cx.lineWidth = 0.5;
+      for (let i = 0; i < projected.length; i++) {
+        for (let j = i + 1; j < projected.length; j++) {
+          const dx = projected[i].x - projected[j].x;
+          const dy = projected[i].y - projected[j].y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 100) {
+            cx.beginPath();
+            cx.moveTo(projected[i].x, projected[i].y);
+            cx.lineTo(projected[j].x, projected[j].y);
+            cx.stroke();
+          }
+        }
+      }
+      
+      requestAnimationFrame(draw);
+    }
+    
+    resize();
+    draw();
+    addEventListener('resize',resize);
   </script>
 <!-- Enhanced animations and particle effects -->
 <script>
