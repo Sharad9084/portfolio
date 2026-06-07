@@ -144,7 +144,7 @@
   .skill-card:hover .tag{border-color:rgba(56,189,248,.4)}
 
   /* ===== projects ===== */
-  .proj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:26px;perspective:1200px}
+  .proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:26px;perspective:1200px}
   .proj-card{position:relative;background:linear-gradient(160deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s;backdrop-filter:blur(6px);}
   .proj-card::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .35s;pointer-events:none}
   .proj-card:hover{transform:translateY(-10px) scale(1.01);box-shadow:0 30px 60px -26px rgba(0,0,0,.85),0 0 40px -20px var(--glow)}
@@ -219,6 +219,7 @@
     .menu-btn{display:block}
     .about-grid{grid-template-columns:1fr}
     .stats{gap:28px}
+    .proj-grid{grid-template-columns:1fr}
   }
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
@@ -661,6 +662,24 @@
 <div class="wrap">
 <div class="sec-head"><div class="kicker">04 — Projects</div><h2>Featured Work 🚀</h2></div>
 <div class="proj-grid">
+<!-- OJOS AI -->
+<article class="proj-card">
+<div class="carousel" data-auto="3500">
+<span class="hf-pill">🤗 Live on HF</span>
+<div class="slides"><img alt="OJOS AI Space Thumbnail" src="https://cdn-thumbnails.huggingface.co/social-thumbnails/spaces/Sharad9084/OJOS-AI.png"/><img alt="OJOS AI Logo" src="https://sharad9084-ojos-ai.hf.space/static/logo.png"/></div>
+<div class="nav-arrow prev">‹</div><div class="nav-arrow next">›</div>
+<div class="dots"></div>
+</div>
+<div class="proj-body">
+<h3>OJOS AI — Eye Disease Detection</h3>
+<p>Clinical-grade Computer Vision application screening 5 eye conditions (Cataract, Glaucoma, Diabetic Retinopathy, Myopia, Healthy) with 96.69% accuracy using EfficientNetV2 and OpenCV CLAHE contrast enhancement. Deployed on Hugging Face Spaces.</p>
+<div class="proj-tags"><span class="tag">Deep Learning</span><span class="tag">EfficientNetV2</span><span class="tag">OpenCV CLAHE</span><span class="tag">Flask</span><span class="tag">Docker</span></div>
+<div class="proj-links">
+<a href="https://sharad9084-ojos-ai.hf.space" target="_blank">Open on Hugging Face ↗</a>
+<a href="https://github.com/Sharad9084/OJOS-AI" target="_blank" style="margin-left: 10px;">GitHub Repo ↗</a>
+</div>
+</div>
+</article>
 <!-- SMS SPAM -->
 <article class="proj-card">
 <div class="carousel" data-auto="3500">
