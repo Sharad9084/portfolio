@@ -168,7 +168,7 @@
   .proj-links a:hover{color:var(--accent2);gap:9px}
 
   /* ===== certifications ===== */
-  .cert-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;perspective:1200px}
+  .cert-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;perspective:1200px}
   .cert-card{position:relative;background:linear-gradient(160deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .35s,box-shadow .35s}
   .cert-card::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(135deg,var(--accent4),var(--accent),var(--accent2));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .35s;pointer-events:none}
   .cert-card:hover{transform:translateY(-8px) scale(1.01);box-shadow:0 22px 40px -22px var(--glow)}
@@ -217,6 +217,7 @@
     .menu-btn{display:block}
     .about-grid{grid-template-columns:1fr}
     .stats{gap:28px}
+    .cert-grid{grid-template-columns:1fr}
   }
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
@@ -598,7 +599,7 @@
             <p>Advanced deep learning web application that detects and classifies 5 eye conditions (Cataract, Glaucoma, Myopia, Diabetic Retinopathy, Healthy Eye) with 96.69% accuracy. Uses EfficientNetV2 and CLAHE local contrast enhancement. Deployed on Hugging Face Spaces.</p>
             <div class="proj-tags"><span class="tag">EfficientNetV2</span><span class="tag">TensorFlow</span><span class="tag">Flask</span><span class="tag">OpenCV</span><span class="tag">Docker</span></div>
             <div class="proj-links">
-              <a href="https://huggingface.co/spaces/Sharad9084/OJOS-AI" target="_blank">Open on Hugging Face ↗</a>
+              <a href="https://sharad9084-ojos-ai.hf.space/" target="_blank">Live Link ↗</a>
               <a href="https://github.com/Sharad9084/OJOS-AI" target="_blank">GitHub ↗</a>
             </div>
           </div>
@@ -615,6 +616,7 @@
             <p>AI-powered, fully browser-based facial recognition attendance system. Uses face-api.js for real-time face detection, registration from 5 angles, auto-marking, and a glassmorphic dashboard with date-wise records and CSV export. No backend needed.</p>
             <div class="proj-tags"><span class="tag">face-api.js</span><span class="tag">JavaScript</span><span class="tag">Computer Vision</span><span class="tag">HTML5/CSS3</span><span class="tag">Glassmorphism</span></div>
             <div class="proj-links">
+              <a href="https://face-attend-ai.netlify.app/" target="_blank">Live Link ↗</a>
               <a href="https://github.com/Sharad9084/face-attendance-system" target="_blank">GitHub ↗</a>
             </div>
           </div>
@@ -631,6 +633,7 @@
             <p>Local MVP for marketing performance reconciliation and optimization. Features PDF invoice extraction using a custom Python parsing engine, dynamic data tables, SQLite/PostgreSQL storage, session-managed auditor login, and a Vercel-ready serverless backend.</p>
             <div class="proj-tags"><span class="tag">Python</span><span class="tag">Flask</span><span class="tag">PostgreSQL</span><span class="tag">PDF.js</span><span class="tag">Vercel</span></div>
             <div class="proj-links">
+              <a href="https://mpro-ai.vercel.app/" target="_blank">Live Link ↗</a>
               <a href="https://github.com/Sharad9084/MPRO-AI" target="_blank">GitHub ↗</a>
             </div>
           </div>
